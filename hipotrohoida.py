@@ -5,7 +5,7 @@ def hx(t, a = 1, b = -11/7):
     return (a + b) * np.cos(t) + b * np.cos((a + b) / b * t)
 
 def hy(t, a = 1, b = -11/7):
-    return (a + b) * np.sin(t) + b * np.sin((a + b) / b * t)
+    return (a + b) * np.sin(t) + b * np.sin((a + b) / b * t) + 1
 
 def h(t, a = 1, b = -11/7):
     return np.array([hx(t, a, b),
