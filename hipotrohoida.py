@@ -77,7 +77,7 @@ Vhod:
 Izhod: (float) vrednost integranda pri parametru t
 """
 def trikotnik_integrand(x, y, dx, dy, t):
-    return x(t) * dy(t) - dx(t) * y(t)
+    return 0.5 * (x(t) * dy(t) - dx(t) * y(t))
 
 """
 trikotnik(x, y, dx, dy, t1, t2, n): izračuna ploščino krivočrtnega trikotnika pod krivuljo s trapeznim pravilom
@@ -92,19 +92,58 @@ Vhod:
 
 Izhod: (float) ploščina krivočrtnega trikotnika pod krivuljo
 """
-def trikotnik(x, y, dx, dy, t1, t2, n = 1000):
-    # Izračunamo dolžino koraka
-    h = (t2 - t1) / n
+# def trikotnik(x, y, dx, dy, t1, t2, n = 1000):
+#     # Izračunamo dolžino koraka
+#     h = (t2 - t1) / n
 
-    # Izračunamo vrednosti funkcije v točkah
-    t_vals = np.linspace(t1, t2, n + 1)
-    f_vals = trikotnik_integrand(x, y, dx, dy, t_vals)
+#     # Izračunamo vrednosti funkcije v točkah
+#     t_vals = np.linspace(t1, t2, n + 1)
+#     f_vals = trikotnik_integrand(x, y, dx, dy, t_vals)
 
-    # Izračunamo integral s trapeznim pravilom
-    integral = h * (np.sum(f_vals) - 0.5 * (f_vals[0] + f_vals[-1]))
+#     # Izračunamo integral s trapeznim pravilom
+#     integral = h * (np.sum(f_vals) - 0.5 * (f_vals[0] + f_vals[-1]))
 
-    # Po definiciji ploščine trikotnika rezultat množimo z 1/2
-    return 1/2 * integral
+#     # Po definiciji ploščine trikotnika rezultat množimo z 1/2
+#     return 1/2 * integral
+
+def gauss_legendre_points_and_weights(n):
+    if n == 3:
+        points = [-np.sqrt(3/5), 0, np.sqrt(3/5)]
+        weights = [5/9, 8/9, 5/9]
+    elif n == 4:
+        points = [-np.sqrt((3 + 2 * np.sqrt(6/5)) / 7), -np.sqrt((3 - 2 * np.sqrt(6/5)) / 7), np.sqrt((3 - 2 * np.sqrt(6/5)) / 7), np.sqrt((3 + 2 * np.sqrt(6/5)) / 7)]
+        weights = [(18 - np.sqrt(30)) / 36, (18 + np.sqrt(30)) / 36, (18 + np.sqrt(30)) / 36, (18 - np.sqrt(30)) / 36]
+    elif n == 5:
+        points = [-1/3 * np.sqrt(5 + 2 * np.sqrt(10/7)), -1/3 * np.sqrt(5 - 2 * np.sqrt(10/7)), 0, 1/3 * np.sqrt(5 - 2 * np.sqrt(10/7)), 1/3 * np.sqrt(5 + 2 * np.sqrt(10/7))]
+        weights = [(322 - 13 * np.sqrt(70)) / 900, (322 + 13 * np.sqrt(70)) / 900, 128/225, (322 + 13 * np.sqrt(70)) / 900, (322 - 13 * np.sqrt(70)) / 900]
+    elif n == 8:
+        points = [0.183434642495650, 0.525532409916329, 0.796666477413627, 0.960289856497536, -0.183434642495650, -0.525532409916329, -0.796666477413627, -0.960289856497536]
+        weights = [0.362683783378362, 0.313706645877887, 0.222381034453374, 0.101228536290376, 0.362683783378362, 0.313706645877887, 0.222381034453374, 0.101228536290376]
+
+    return points, weights
+
+def trikotnik(x, y, dx, dy, t1, t2, n = 3):
+    # Določimo vozlišča in uteži za Gaussovo kvadraturo
+    nodes, weights = gauss_legendre_points_and_weights(n)
+
+    a = t1
+    b = t2
+
+    m = (a + b) / 2
+    L = b - a
+
+    t = lambda x: 2 * (x - m) / L
+
+    test = np.linspace(0, 2 * np.pi, 10)
+    print(test)
+    print(t(test))
+
+    integral = 0
+    for i in range(n):
+        x_transformed = m + L / 2 * nodes[i]  # Transforming nodes to the interval [t1, t2]
+        integral += trikotnik_integrand(x, y, dx, dy, x_transformed) * L / 2 * weights[i]
+
+    return integral
 
 """
 hipotrohoida(n, a, b): vrne ploščino območja, ki ga omejuje hipotrohoida, definirana z a in b.                    
@@ -117,7 +156,7 @@ Vhod:
 
 Izhod: (float) ploščina območja, ki ga omejuje hipotrohoida
 """
-def hipotrohoida(n = 1000, a = 1, b = -11/7):
+def hipotrohoida(n = 3, a = 1, b = -11/7):
     # Definiramo meje integrala, ki so meje enega od zunanjih lokov hipotrohoide
     t_1 = -11/(7 * 2)
     t_2 = 11/(7 * 2)
