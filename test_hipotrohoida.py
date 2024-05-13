@@ -41,7 +41,7 @@ class TestHipotrohoida(unittest.TestCase):
         dx = lambda t: -np.sin(t)
         dy = lambda t: np.cos(t)
 
-        P = trikotnik(x, y, dx, dy, 0, 2 * np.pi, n = 3)
+        P = trikotnik(x, y, dx, dy, 0, 2 * np.pi, n = 5)
 
         self.assertAlmostEqual(P, np.pi, places=10)
 

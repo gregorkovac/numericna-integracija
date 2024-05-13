@@ -27,6 +27,7 @@ $P = \frac{1}{2} \int_{t_1}^{t_2} (x(t)\dot{y}(t) - \dot{x}(t)y(t)) dt$.
 - [test_normal.py](test_normal.py) - Python skripta s testi za 1. nalogo
 - [hipotrohoida.py](hipotrohoida.py) - Python skripta s kodo za 2. nalogo
 - [test_hipotrohoida.py](test_hipotrohoida.py) - Python skripta s testi za 2. nalogo
+- [gauss_quadrature.py](gauss_quadrature.py) - Python skripta z implementacijo Gaussovih kvadratur
 - [report.pdf](report.pdf) - poročilo projekta
 - [demo.ipynb](demo.ipynb) - Jupyter notebook skripta za dinamično generiranje poročila
 
